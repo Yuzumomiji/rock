@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ロック | Unlock Guild</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #12151C;
+    --panel: #1B2029;
+    --panel-edge: #2C333F;
+    --ink: #E9E6DD;
+    --ink-soft: #9BA2AC;
+    --glow: #5CC8C0;
+    --glow-dim: #3A7D78;
+    --gold: #C9A227;
+    --gold-dark: #9A7C1E;
+    --bubble-chief: #1E2530;
+    --bubble-user: #262D3A;
+  }
+
+  * { box-sizing: border-box; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: transparent;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    color: var(--ink);
+  }
+
+  .app {
+    max-width: 440px;
+    margin: 0 auto;
+    height: 640px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-deep);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--panel-edge);
+  }
+
+  /* ---------- Header ---------- */
+  .plaque {
+    position: relative;
+    background: var(--panel);
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--panel-edge);
+    flex-shrink: 0;
+  }
+
+  .cat-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  .nameplate-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .name {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(201,162,39,0.5);
+  }
+
+  .status {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--glow);
+    box-shadow: 0 0 5px var(--glow);
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.5; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* ---------- Chat area ---------- */
+  .chat-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--bg-deep);
+  }
+
+  .row {
+    display: flex;
+    gap: 8px;
+    max-width: 92%;
+  }
+  .row.chief { align-self: flex-start; }
+  .row.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--panel);
+    border: 1.5px solid var(--panel-edge);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .avatar svg { width: 20px; height: 20px; }
+
+  .bubble {
+    padding: 9px 13px;
+    border-radius: 3px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .row.chief .bubble {
+    background: var(--bubble-chief);
+    border-left: 3px solid var(--glow-dim);
+    border-radius: 2px 10px 10px 10px;
+    color: var(--ink);
+  }
+
+  .row.user .bubble {
+    background: var(--bubble-user);
+    border-right: 3px solid var(--gold-dark);
+    border-radius: 10px 2px 10px 10px;
+    color: var(--ink);
+  }
+
+  .typing {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px 2px;
+  }
+  .typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  .error-note {
+    align-self: center;
+    font-size: 12.5px;
+    color: #D98B7C;
+    background: #2A1E1C;
+    border: 1px dashed #7A4A40;
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+
+  /* ---------- Composer ---------- */
+  .composer {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--panel);
+    border-top: 1px solid var(--panel-edge);
+    flex-shrink: 0;
+  }
+
+  .composer input {
+    flex: 1;
+    border: 1px solid var(--panel-edge);
+    background: var(--bubble-chief);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+  .composer input:focus {
+    outline: 2px solid var(--glow);
+    outline-offset: 1px;
+  }
+  .composer input::placeholder { color: var(--ink-soft); }
+
+  .composer button {
+    flex-shrink: 0;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    background: transparent;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .composer button:hover:not(:disabled) {
+    background: var(--gold);
+    color: var(--bg-deep);
+  }
+  .composer button:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+  .composer button:focus-visible {
+    outline: 2px solid var(--glow);
+    outline-offset: 2px;
+  }
+  .composer button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .chat-scroll::-webkit-scrollbar { width: 8px; }
+  .chat-scroll::-webkit-scrollbar-thumb { background: var(--panel-edge); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="plaque">
+    <!--
+      プレースホルダーのイラストです。
+      最終的な「ロック」の絵ができたら、この <div class="cat-wrap">...</div> の中身をまるごと
+      差し替えてください(サイズの目安: 幅150 x 高さ130前後)。
+    -->
+    <div class="cat-wrap">
+      <svg viewBox="0 0 300 260" width="150" height="130" role="img" aria-label="黒猫のロックのプレースホルダーイラスト">
+        <!-- tail -->
+        <path d="M 205 190 Q 250 190 245 140 Q 242 115 220 118" fill="none" stroke="#15181F" stroke-width="14" stroke-linecap="round"/>
+        <!-- body -->
+        <ellipse cx="150" cy="190" rx="58" ry="40" fill="#15181F"/>
+        <!-- head -->
+        <circle cx="150" cy="120" r="52" fill="#15181F"/>
+        <!-- ears -->
+        <polygon points="108,90 96,42 140,78" fill="#15181F"/>
+        <polygon points="192,90 204,42 160,78" fill="#15181F"/>
+        <polygon points="112,86 105,58 132,80" fill="#262B33"/>
+        <polygon points="188,86 195,58 168,80" fill="#262B33"/>
+        <!-- eyes (glowing) -->
+        <ellipse cx="128" cy="120" rx="9" ry="11" fill="var(--glow)"/>
+        <ellipse cx="172" cy="120" rx="9" ry="11" fill="var(--glow)"/>
+        <ellipse cx="128" cy="120" rx="9" ry="11" fill="var(--glow)" opacity="0.5">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="172" cy="120" rx="9" ry="11" fill="var(--glow)" opacity="0.5">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+        </ellipse>
+        <!-- collar + tag -->
+        <path d="M 108 148 Q 150 168 192 148" fill="none" stroke="var(--gold)" stroke-width="4"/>
+        <circle cx="150" cy="168" r="9" fill="var(--gold)" stroke="var(--gold-dark)" stroke-width="1.5"/>
+        <!-- whiskers -->
+        <line x1="100" y1="128" x2="60" y2="122" stroke="#3A3F49" stroke-width="1.5"/>
+        <line x1="100" y1="136" x2="60" y2="138" stroke="#3A3F49" stroke-width="1.5"/>
+        <line x1="200" y1="128" x2="240" y2="122" stroke="#3A3F49" stroke-width="1.5"/>
+        <line x1="200" y1="136" x2="240" y2="138" stroke="#3A3F49" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="nameplate-row">
+      <span class="name">ロック</span>
+      <span class="tag"></span>
+    </div>
+    <div class="status"><span class="dot"></span>在席中・チャット対応可能</div>
+  </div>
+
+  <div class="chat-scroll" id="chat"></div>
+
+  <form class="composer" id="composer" autocomplete="off">
+    <input id="input" type="text" placeholder="ロックに相談する…" maxlength="600" />
+    <button type="submit" id="sendBtn">送信</button>
+  </form>
+
+</div>
+
+<script>
+  // システムプロンプト(人格設定)はサーバー側の api/chat.js にあります。
+  // ここにはAPIキーや人格プロンプトを書かないでください。
+
+  const chat = document.getElementById('chat');
+  const form = document.getElementById('composer');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('sendBtn');
+
+  let history = [];
+
+  const avatarSvg = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#15181F" stroke="#2C333F" stroke-width="3"/><ellipse cx="38" cy="46" rx="6" ry="8" fill="#5CC8C0"/><ellipse cx="62" cy="46" rx="6" ry="8" fill="#5CC8C0"/><polygon points="30,32 26,18 40,28" fill="#15181F"/><polygon points="70,32 74,18 60,28" fill="#15181F"/></svg>`;
+
+  function scrollToBottom() {
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function addMessage(role, text) {
+    const row = document.createElement('div');
+    row.className = 'row ' + (role === 'user' ? 'user' : 'chief');
+
+    if (role !== 'user') {
+      const av = document.createElement('div');
+      av.className = 'avatar';
+      av.innerHTML = avatarSvg;
+      row.appendChild(av);
+    }
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+
+    chat.appendChild(row);
+    scrollToBottom();
+    return bubble;
+  }
+
+  function addTyping() {
+    const row = document.createElement('div');
+    row.className = 'row chief';
+    row.id = 'typingRow';
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.innerHTML = avatarSvg;
+    row.appendChild(av);
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+    row.appendChild(bubble);
+    chat.appendChild(row);
+    scrollToBottom();
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typingRow');
+    if (t) t.remove();
+  }
+
+  function addError(text) {
+    const div = document.createElement('div');
+    div.className = 'error-note';
+    div.textContent = text;
+    chat.appendChild(div);
+    scrollToBottom();
+  }
+
+  async function sendToRock(userText) {
+    history.push({ role: 'user', content: userText });
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || ('API error: ' + response.status));
+      const replyText = data.reply || '……電波の調子が悪いみたいだな。もう一度頼む。';
+
+      history.push({ role: 'assistant', content: replyText });
+      removeTyping();
+      addMessage('chief', replyText);
+    } catch (err) {
+      console.error('ロック API error:', err);
+      removeTyping();
+      addError('ロック、少し電池切れ気味です。もう一度送ってみてください。');
+      history.pop();
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage('user', text);
+    input.value = '';
+    sendBtn.disabled = true;
+    input.disabled = true;
+    addTyping();
+
+    sendToRock(text).finally(() => {
+      sendBtn.disabled = false;
+      input.disabled = false;
+      input.focus();
+    });
+  });
+
+  // Opening line
+  addMessage('chief', 'よう。今日はどんな謎を持ってきた？');
+</script>
+
+</body>
+</html>
