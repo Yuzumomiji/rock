@@ -14,8 +14,8 @@
     --panel-edge: #2C333F;
     --ink: #E9E6DD;
     --ink-soft: #9BA2AC;
-    --glow: #5CC8C0;
-    --glow-dim: #3A7D78;
+    --glow: #8B93D9;
+    --glow-dim: #565E9E;
     --gold: #C9A227;
     --gold-dark: #9A7C1E;
     --bubble-chief: #1E2530;
@@ -31,22 +31,70 @@
   html, body {
     margin: 0;
     height: 100%;
-    background: transparent;
     font-family: 'Zen Maru Gothic', sans-serif;
     color: var(--ink);
   }
 
+  /* ---------- Page stage: 3-column layout ---------- */
+  .stage {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr minmax(320px, 480px) 1fr;
+    align-items: stretch;
+    background-color: var(--bg-deep);
+    background-image:
+      radial-gradient(ellipse 900px 700px at 50% 40%, rgba(139,147,217,0.08), transparent 65%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%238B93D9' stroke-width='1.1' opacity='0.07'%3E%3Ccircle cx='24' cy='24' r='9'/%3E%3Cline x1='31' y1='31' x2='58' y2='58'/%3E%3Cline x1='48' y1='48' x2='58' y2='38'/%3E%3Cline x1='53' y1='53' x2='63' y2='43'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat, repeat;
+  }
+
+  .side-panel {
+    position: relative;
+    overflow: hidden;
+    /* 神谷・神崎の世界観イラストが出来たら、この要素に
+       background-image (または中に<img>) で差し込んでください。
+       今は鍵モチーフのテクスチャ+ヴィネットだけの状態です。 */
+  }
+  .side-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(20,23,31,0) 0%, rgba(18,21,28,0.55) 70%, rgba(18,21,28,0.92) 100%);
+  }
+  .side-panel.left::after,
+  .side-panel.right::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    background: linear-gradient(90deg, rgba(18,21,28,0) 0%, rgba(18,21,28,0.9) 100%);
+  }
+  .side-panel.left::after { right: 0; }
+  .side-panel.right::after { left: 0; transform: scaleX(-1); }
+
+  @media (max-width: 900px) {
+    .stage { grid-template-columns: 1fr; }
+    .side-panel { display: none; }
+  }
+
+  /* ---------- Center chat card ---------- */
   .app {
-    max-width: 440px;
-    margin: 0 auto;
-    height: 640px;
-    max-height: 92vh;
+    justify-self: center;
+    align-self: center;
+    width: 100%;
+    max-width: 460px;
+    height: min(760px, 90vh);
+    margin: 16px 0;
     display: flex;
     flex-direction: column;
-    background: var(--bg-deep);
+    background: var(--panel);
     border-radius: 18px;
     overflow: hidden;
     border: 1px solid var(--panel-edge);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 1;
   }
 
   /* ---------- Header ---------- */
@@ -64,30 +112,12 @@
     margin-bottom: 4px;
   }
 
-  .nameplate-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .name {
-    font-family: 'Shippori Mincho', serif;
-    font-weight: 700;
-    font-size: 21px;
-    letter-spacing: 0.1em;
-    color: var(--ink);
-  }
-
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 6px rgba(201,162,39,0.5);
+  .rock-illustration {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 190px;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.55));
   }
 
   .status {
@@ -115,7 +145,7 @@
     50% { opacity: 1; transform: scale(1.1); }
   }
 
-  /* ---------- Chat area ---------- */
+  /* ---------- Chat area (this is the part that scrolls) ---------- */
   .chat-scroll {
     flex: 1;
     overflow-y: auto;
@@ -141,12 +171,16 @@
     border-radius: 50%;
     background: var(--panel);
     border: 1.5px solid var(--panel-edge);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
     margin-top: 2px;
   }
-  .avatar svg { width: 20px; height: 20px; }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+  }
 
   .bubble {
     padding: 9px 13px;
@@ -261,60 +295,30 @@
 </head>
 <body>
 
-<div class="app">
+<div class="stage">
 
-  <div class="plaque">
-    <!--
-      プレースホルダーのイラストです。
-      最終的な「ロック」の絵ができたら、この <div class="cat-wrap">...</div> の中身をまるごと
-      差し替えてください(サイズの目安: 幅150 x 高さ130前後)。
-    -->
-    <div class="cat-wrap">
-      <svg viewBox="0 0 300 260" width="150" height="130" role="img" aria-label="黒猫のロックのプレースホルダーイラスト">
-        <!-- tail -->
-        <path d="M 205 190 Q 250 190 245 140 Q 242 115 220 118" fill="none" stroke="#15181F" stroke-width="14" stroke-linecap="round"/>
-        <!-- body -->
-        <ellipse cx="150" cy="190" rx="58" ry="40" fill="#15181F"/>
-        <!-- head -->
-        <circle cx="150" cy="120" r="52" fill="#15181F"/>
-        <!-- ears -->
-        <polygon points="108,90 96,42 140,78" fill="#15181F"/>
-        <polygon points="192,90 204,42 160,78" fill="#15181F"/>
-        <polygon points="112,86 105,58 132,80" fill="#262B33"/>
-        <polygon points="188,86 195,58 168,80" fill="#262B33"/>
-        <!-- eyes (glowing) -->
-        <ellipse cx="128" cy="120" rx="9" ry="11" fill="var(--glow)"/>
-        <ellipse cx="172" cy="120" rx="9" ry="11" fill="var(--glow)"/>
-        <ellipse cx="128" cy="120" rx="9" ry="11" fill="var(--glow)" opacity="0.5">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
-        </ellipse>
-        <ellipse cx="172" cy="120" rx="9" ry="11" fill="var(--glow)" opacity="0.5">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
-        </ellipse>
-        <!-- collar + tag -->
-        <path d="M 108 148 Q 150 168 192 148" fill="none" stroke="var(--gold)" stroke-width="4"/>
-        <circle cx="150" cy="168" r="9" fill="var(--gold)" stroke="var(--gold-dark)" stroke-width="1.5"/>
-        <!-- whiskers -->
-        <line x1="100" y1="128" x2="60" y2="122" stroke="#3A3F49" stroke-width="1.5"/>
-        <line x1="100" y1="136" x2="60" y2="138" stroke="#3A3F49" stroke-width="1.5"/>
-        <line x1="200" y1="128" x2="240" y2="122" stroke="#3A3F49" stroke-width="1.5"/>
-        <line x1="200" y1="136" x2="240" y2="138" stroke="#3A3F49" stroke-width="1.5"/>
-      </svg>
+  <div class="side-panel left" aria-hidden="true"></div>
+
+  <div class="app">
+
+    <div class="plaque">
+      <div class="cat-wrap">
+        <img class="rock-illustration" src="images/rock-illustration.png" alt="ロックのイラスト(本を読む黒猫)">
+      </div>
+
+      <div class="status"><span class="dot"></span>在席中・チャット対応可能</div>
     </div>
 
-    <div class="nameplate-row">
-      <span class="name">ロック</span>
-      <span class="tag"></span>
-    </div>
-    <div class="status"><span class="dot"></span>在席中・チャット対応可能</div>
+    <div class="chat-scroll" id="chat"></div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <input id="input" type="text" placeholder="ロックに相談する…" maxlength="600" />
+      <button type="submit" id="sendBtn">送信</button>
+    </form>
+
   </div>
 
-  <div class="chat-scroll" id="chat"></div>
-
-  <form class="composer" id="composer" autocomplete="off">
-    <input id="input" type="text" placeholder="ロックに相談する…" maxlength="600" />
-    <button type="submit" id="sendBtn">送信</button>
-  </form>
+  <div class="side-panel right" aria-hidden="true"></div>
 
 </div>
 
@@ -329,7 +333,7 @@
 
   let history = [];
 
-  const avatarSvg = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#15181F" stroke="#2C333F" stroke-width="3"/><ellipse cx="38" cy="46" rx="6" ry="8" fill="#5CC8C0"/><ellipse cx="62" cy="46" rx="6" ry="8" fill="#5CC8C0"/><polygon points="30,32 26,18 40,28" fill="#15181F"/><polygon points="70,32 74,18 60,28" fill="#15181F"/></svg>`;
+  const avatarImgHtml = `<img src="images/rock-avatar.png" alt="ロック">`;
 
   function scrollToBottom() {
     chat.scrollTop = chat.scrollHeight;
@@ -342,7 +346,7 @@
     if (role !== 'user') {
       const av = document.createElement('div');
       av.className = 'avatar';
-      av.innerHTML = avatarSvg;
+      av.innerHTML = avatarImgHtml;
       row.appendChild(av);
     }
 
@@ -362,7 +366,7 @@
     row.id = 'typingRow';
     const av = document.createElement('div');
     av.className = 'avatar';
-    av.innerHTML = avatarSvg;
+    av.innerHTML = avatarImgHtml;
     row.appendChild(av);
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
@@ -429,7 +433,7 @@
   });
 
   // Opening line
-  addMessage('chief', 'よう。今日はどんな謎を持ってきた？');
+  addMessage('chief', '今日は何を解決したいかニャ？');
 </script>
 
 </body>
