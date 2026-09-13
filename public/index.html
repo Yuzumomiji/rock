@@ -90,16 +90,22 @@
     flex-direction: column;
     background: var(--panel);
     border-radius: 18px;
-    overflow: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--panel-edge);
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     position: relative;
     z-index: 1;
+    scrollbar-width: thin;
   }
+  .app::-webkit-scrollbar { width: 8px; }
+  .app::-webkit-scrollbar-thumb { background: var(--panel-edge); border-radius: 4px; }
 
   /* ---------- Header ---------- */
   .plaque {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 3;
     background: var(--panel);
     padding: 18px 16px 14px;
     border-bottom: 1px solid var(--panel-edge);
@@ -148,7 +154,7 @@
   /* ---------- Chat area (this is the part that scrolls) ---------- */
   .chat-scroll {
     flex: 1;
-    overflow-y: auto;
+    min-height: 320px;
     padding: 16px 14px;
     display: flex;
     flex-direction: column;
@@ -236,6 +242,9 @@
 
   /* ---------- Composer ---------- */
   .composer {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
     display: flex;
     gap: 8px;
     padding: 10px 12px;
@@ -299,7 +308,7 @@
 
   <div class="side-panel left" aria-hidden="true"></div>
 
-  <div class="app">
+  <div class="app" id="app">
 
     <div class="plaque">
       <div class="cat-wrap">
@@ -327,6 +336,7 @@
   // ここにはAPIキーや人格プロンプトを書かないでください。
 
   const chat = document.getElementById('chat');
+  const appEl = document.getElementById('app');
   const form = document.getElementById('composer');
   const input = document.getElementById('input');
   const sendBtn = document.getElementById('sendBtn');
@@ -336,7 +346,7 @@
   const avatarImgHtml = `<img src="images/rock-avatar.png" alt="ロック">`;
 
   function scrollToBottom() {
-    chat.scrollTop = chat.scrollHeight;
+    appEl.scrollTop = appEl.scrollHeight;
   }
 
   function addMessage(role, text) {
