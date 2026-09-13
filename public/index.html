@@ -36,25 +36,36 @@
   }
 
   /* ---------- Page stage: 3-column layout ---------- */
+  html, body {
+    min-height: 100%;
+  }
+
   .stage {
+    position: relative;
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr minmax(320px, 480px) 1fr;
-    align-items: stretch;
     background-color: var(--bg-deep);
     background-image:
       radial-gradient(ellipse 900px 700px at 50% 40%, rgba(139,147,217,0.08), transparent 65%),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%238B93D9' stroke-width='1.1' opacity='0.07'%3E%3Ccircle cx='24' cy='24' r='9'/%3E%3Cline x1='31' y1='31' x2='58' y2='58'/%3E%3Cline x1='48' y1='48' x2='58' y2='38'/%3E%3Cline x1='53' y1='53' x2='63' y2='43'/%3E%3C/g%3E%3C/svg%3E");
     background-repeat: no-repeat, repeat;
+    background-attachment: fixed, fixed;
   }
 
+  /* 左右は固定背景(スクロールしても動かない)。ページ自体はブラウザ標準のスクロールで流れます。 */
   .side-panel {
-    position: relative;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: calc(50% - 240px);
     overflow: hidden;
+    z-index: 0;
     /* 神谷・神崎の世界観イラストが出来たら、この要素に
        background-image (または中に<img>) で差し込んでください。
        今は鍵モチーフのテクスチャ+ヴィネットだけの状態です。 */
   }
+  .side-panel.left { left: 0; }
+  .side-panel.right { right: 0; }
+
   .side-panel::before {
     content: '';
     position: absolute;
@@ -74,32 +85,21 @@
   .side-panel.right::after { left: 0; transform: scaleX(-1); }
 
   @media (max-width: 900px) {
-    .stage { grid-template-columns: 1fr; }
     .side-panel { display: none; }
   }
 
-  /* ---------- Center chat card ---------- */
+  /* ---------- Center column: ふつうのページと同じく、ここはbody/htmlがスクロールします ---------- */
   .app {
-    justify-self: center;
-    align-self: center;
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 460px;
-    height: min(760px, 90vh);
-    margin: 16px 0;
+    max-width: 480px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     background: var(--panel);
-    border-radius: 18px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--panel-edge);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    position: relative;
-    z-index: 1;
-    scrollbar-width: thin;
   }
-  .app::-webkit-scrollbar { width: 8px; }
-  .app::-webkit-scrollbar-thumb { background: var(--panel-edge); border-radius: 4px; }
+
 
   /* ---------- Header ---------- */
   .plaque {
@@ -336,7 +336,6 @@
   // ここにはAPIキーや人格プロンプトを書かないでください。
 
   const chat = document.getElementById('chat');
-  const appEl = document.getElementById('app');
   const form = document.getElementById('composer');
   const input = document.getElementById('input');
   const sendBtn = document.getElementById('sendBtn');
@@ -346,7 +345,7 @@
   const avatarImgHtml = `<img src="images/rock-avatar.png" alt="ロック">`;
 
   function scrollToBottom() {
-    appEl.scrollTop = appEl.scrollHeight;
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' });
   }
 
   function addMessage(role, text) {
