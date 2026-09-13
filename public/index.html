@@ -20,8 +20,8 @@
     --gold-dark: #9A7C1E;
     --bubble-chief: #1E2530;
     --bubble-user: #262D3A;
-    --panel-a: rgba(27,32,41,0.86);
-    --bg-deep-a: rgba(18,21,28,0.80);
+    --panel-a: rgba(27,32,41,0.78);
+    --bg-deep-a: rgba(18,21,28,0.70);
   }
 
   * { box-sizing: border-box; }
@@ -32,11 +32,13 @@
 
   html {
     overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   html, body {
     margin: 0;
     min-height: 100%;
+    max-width: 100%;
     font-family: 'Zen Maru Gothic', sans-serif;
     color: var(--ink);
   }
@@ -57,7 +59,8 @@
 
   @media (max-width: 900px) {
     .stage {
-      background-position: center, left center;
+      background-position: center, right center;
+      background-attachment: scroll, scroll;
     }
   }
 
@@ -105,6 +108,7 @@
     width: 100%;
     max-width: 480px;
     height: 100vh;
+    height: 100dvh;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -272,6 +276,7 @@
 
   .composer input {
     flex: 1;
+    min-width: 0;
     border: 1px solid var(--panel-edge);
     background: var(--bubble-chief);
     border-radius: 8px;
@@ -459,7 +464,7 @@
   });
 
   // Opening line
-  addMessage('chief', '今日は何を解決したいかニャ？');
+  addMessage('chief', 'さぁ、今日はどんな謎を解きたいのだ・・？');
 </script>
 
 </body>
