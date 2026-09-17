@@ -458,7 +458,7 @@
     const avatarImgHtml = `<img src="images/rock-avatar.png" alt="ロック">`;
 
     function scrollToBottom() {
-      window.scrollTo({top: document.documentElement.scrollHeight, behavior: 'auto'});
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' });
     }
 
     function addMessage(role, text) {
@@ -512,20 +512,20 @@
     }
 
     async function sendToRock(userText) {
-      history.push({role: 'user', content: userText});
+      history.push({ role: 'user', content: userText });
 
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({messages: history})
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history })
         });
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || ('API error: ' + response.status));
         const replyText = data.reply || '……電波の調子が悪いみたいだな。もう一度頼む。';
 
-        history.push({role: 'assistant', content: replyText});
+        history.push({ role: 'assistant', content: replyText });
         removeTyping();
         addMessage('chief', replyText);
       } catch (err) {
@@ -555,7 +555,7 @@
     });
 
     // Opening line
-    addMessage('chief', 'どんな謎も解いてみせるぜ！');
+    addMessage('chief', '俺は、どんな謎でも解いてやるぜ！');
   </script>
 
 </body>
